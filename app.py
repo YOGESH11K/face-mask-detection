@@ -6,7 +6,6 @@ import os
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from tensorflow.keras.preprocessing.image import img_to_array
 from tensorflow.keras.models import load_model
-import detect_mask_image
 
 # Setting custom Page Title and Icon with changed layout and sidebar state
 st.set_page_config(page_title='Face Mask Detector', page_icon='😷', layout='centered', initial_sidebar_state='expanded')
@@ -34,6 +33,9 @@ def mask_image():
     # load the input image from disk and grab the image spatial
     # dimensions
     image = cv2.imread("./images/out.jpg")
+    if image is None:
+        st.warning("No image available yet. Please upload an image first.")
+        return
     (h, w) = image.shape[:2]
 
     # construct a blob from the image
@@ -97,7 +99,6 @@ def mask_detection():
     local_css("css/styles.css")
     st.markdown('<h1 align="center">😷 Face Mask Detection</h1>', unsafe_allow_html=True)
     activities = ["Image", "Webcam"]
-    st.set_option('deprecation.showfileUploaderEncoding', False)
     st.sidebar.markdown("# Mask Detection on?")
     choice = st.sidebar.selectbox("Choose among the given options:", activities)
 
@@ -108,10 +109,11 @@ def mask_detection():
         if image_file is not None:
             our_image = Image.open(image_file)  # making compatible to PIL
             im = our_image.save('./images/out.jpg')
-            saved_image = st.image(image_file, caption='', use_column_width=True)
+            saved_image = st.image(image_file, caption='', use_container_width=True)
             st.markdown('<h3 align="center">Image uploaded successfully!</h3>', unsafe_allow_html=True)
             if st.button('Process'):
-                st.image(RGB_img, use_column_width=True)
+                mask_image()
+                st.image(RGB_img, use_container_width=True)
 
     if choice == 'Webcam':
         st.markdown('<h2 align="center">Detection on Webcam</h2>', unsafe_allow_html=True)
