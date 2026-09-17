@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Stem Face Mask Detector</title>
-    <meta name="description" content="AI-powered face mask detection. Detects whether a person is wearing a face mask in real time." />
+    <meta name="description" content="Real-time AI face mask detection in your browser. Live webcam or image upload." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
@@ -15,83 +15,118 @@
         background: radial-gradient(1200px 600px at 20% -10%, #1e3a8a 0%, #0f172a 45%, #020617 100%);
         color: #f8fafc;
         min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 24px;
+        padding: 32px 16px;
       }
-      .card {
-        max-width: 720px;
-        width: 100%;
-        text-align: center;
-        background: rgba(15, 23, 42, 0.65);
-        border: 1px solid rgba(148, 163, 184, 0.2);
-        border-radius: 24px;
-        padding: 56px 40px;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 30px 60px rgba(0,0,0,0.45);
-      }
+      .app { max-width: 760px; margin: 0 auto; }
+      header { text-align: center; margin-bottom: 32px; }
       .badge {
-        display: inline-block;
-        font-size: 13px;
-        font-weight: 600;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        color: #7dd3fc;
-        background: rgba(14, 165, 233, 0.12);
-        border: 1px solid rgba(56, 189, 248, 0.35);
-        border-radius: 999px;
-        padding: 6px 14px;
-        margin-bottom: 20px;
+        display: inline-block; font-size: 13px; font-weight: 600; letter-spacing: 0.06em;
+        text-transform: uppercase; color: #7dd3fc; background: rgba(14,165,233,0.12);
+        border: 1px solid rgba(56,189,248,0.35); border-radius: 999px; padding: 6px 14px; margin-bottom: 14px;
       }
-      h1 { font-size: 42px; font-weight: 800; line-height: 1.1; margin-bottom: 16px; }
+      h1 { font-size: 38px; font-weight: 800; line-height: 1.1; }
       h1 span { color: #38bdf8; }
-      p { font-size: 17px; line-height: 1.6; color: #cbd5e1; margin-bottom: 32px; }
-      .cta {
-        display: inline-block;
-        background: linear-gradient(135deg, #0284c7, #2563eb);
-        color: #fff;
-        font-weight: 700;
-        font-size: 17px;
-        text-decoration: none;
-        padding: 16px 32px;
-        border-radius: 14px;
-        box-shadow: 0 12px 30px rgba(37, 99, 235, 0.4);
-        transition: transform 0.15s ease, box-shadow 0.15s ease;
+      header p { color: #cbd5e1; margin-top: 10px; font-size: 15px; }
+      .choose { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; margin-top: 8px; }
+      .card {
+        flex: 1; min-width: 220px; max-width: 320px; cursor: pointer; text-align: center;
+        background: rgba(15,23,42,0.7); border: 1px solid rgba(148,163,184,0.2); border-radius: 20px;
+        padding: 34px 24px; transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
       }
-      .cta:hover { transform: translateY(-2px); box-shadow: 0 16px 36px rgba(37, 99, 235, 0.55); }
-      .features { display: flex; gap: 20px; justify-content: center; margin-top: 36px; flex-wrap: wrap; }
-      .feature {
-        flex: 1;
-        min-width: 160px;
-        background: rgba(2, 132, 199, 0.08);
-        border: 1px solid rgba(56, 189, 248, 0.15);
-        border-radius: 14px;
-        padding: 18px 14px;
+      .card:hover { transform: translateY(-4px); border-color: rgba(56,189,248,0.6); box-shadow: 0 18px 40px rgba(2,132,199,0.25); }
+      .card .icon { font-size: 44px; margin-bottom: 14px; }
+      .card h2 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+      .card p { font-size: 14px; color: #94a3b8; }
+      .panel { display: none; background: rgba(15,23,42,0.7); border: 1px solid rgba(148,163,184,0.2); border-radius: 20px; padding: 24px; }
+      .panel .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+      .panel h2 { font-size: 18px; }
+      button {
+        font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; color: #0f172a;
+        background: linear-gradient(135deg, #7dd3fc, #38bdf8); border: none; border-radius: 10px; padding: 10px 18px;
       }
-      .feature .icon { font-size: 26px; margin-bottom: 8px; }
-      .feature .label { font-size: 14px; font-weight: 600; color: #e2e8f0; }
-      footer { margin-top: 28px; font-size: 13px; color: #64748b; }
+      button.secondary { background: transparent; color: #cbd5e1; border: 1px solid rgba(148,163,184,0.4); }
+      button.back { background: transparent; color: #94a3b8; border: 1px solid rgba(148,163,184,0.3); }
+      .stage { position: relative; border-radius: 14px; overflow: hidden; background: #020617; min-height: 240px; }
+      canvas { display: block; width: 100%; height: auto; }
+      video { display: none; }
+      .status {
+        position: absolute; left: 12px; bottom: 12px; background: rgba(2,6,23,0.75); color: #e2e8f0;
+        font-size: 13px; padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(148,163,184,0.25);
+        max-width: 90%;
+      }
+      .upload-box {
+        display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 18px 0 4px;
+      }
+      .upload-box input[type=file] { color: #cbd5e1; font-family: inherit; font-size: 14px; }
+      #fileLabel {
+        display: inline-block; font-size: 14px; font-weight: 600; cursor: pointer; color: #0f172a;
+        background: linear-gradient(135deg, #7dd3fc, #38bdf8); border-radius: 10px; padding: 12px 22px;
+      }
+      footer { text-align: center; margin-top: 28px; font-size: 13px; color: #64748b; }
+      .hidden { display: none; }
+      .notice { display: none; text-align: center; color: #fbbf24; background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.3); border-radius: 12px; padding: 12px 16px; margin-bottom: 16px; font-size: 14px; }
     </style>
   </head>
   <body>
-    <div class="card">
-      <span class="badge">AI-powered</span>
-      <h1>Stem <span>Face Mask</span> Detector</h1>
-      <p>
-        Upload an image and our MobileNetV2 model instantly tells you if a person
-        is wearing a face mask or not — with bounding boxes and confidence scores.
-      </p>
-      <a class="cta" id="launch" href="#" target="_blank" rel="noopener">Launch Detector</a>
-      <div class="features">
-        <div class="feature"><div class="icon">🤖</div><div class="label">MobileNetV2 model</div></div>
-        <div class="feature"><div class="icon">🖼️</div><div class="label">Image upload</div></div>
-        <div class="feature"><div class="icon">📊</div><div class="label">Confidence score</div></div>
+    <div class="app">
+      <header>
+        <div class="badge">AI-powered &middot; runs 100% in your browser</div>
+        <h1>Stem <span>Face Mask</span> Detector</h1>
+        <p>Detects whether a person is wearing a face mask &mdash; live or from an image.</p>
+      </header>
+
+      <div class="notice" id="notice"></div>
+
+      <!-- Choose mode -->
+      <div class="choose" id="choose">
+        <div class="card" id="optWebcam">
+          <div class="icon">📹</div>
+          <h2>Live Webcam</h2>
+          <p>Open your device camera and detect masks in real time.</p>
+        </div>
+        <div class="card" id="optImage">
+          <div class="icon">🖼️</div>
+          <h2>Upload Image</h2>
+          <p>Pick a photo and this app will find faces and check for masks.</p>
+        </div>
       </div>
-      <footer>Powered by YOGESH11K &middot; Face Mask Detection</footer>
+
+      <!-- Webcam panel -->
+      <div class="panel" id="webcamPanel">
+        <div class="toolbar">
+          <h2>📹 Live Webcam</h2>
+          <div>
+            <button id="stopCam" class="secondary">Stop Camera</button>
+            <button id="backWebcam" class="back">← Back</button>
+          </div>
+        </div>
+        <div class="stage">
+          <video id="video" autoplay playsinline muted></video>
+          <canvas id="camCanvas"></canvas>
+          <div class="status" id="camStatus">Loading…</div>
+        </div>
+      </div>
+
+      <!-- Image panel -->
+      <div class="panel" id="imagePanel">
+        <div class="toolbar">
+          <h2>🖼️ Upload Image</h2>
+          <button id="backImage" class="back">← Back</button>
+        </div>
+        <div class="upload-box" id="uploadBox">
+          <label id="fileLabel">📁 Choose an image</label>
+          <input type="file" id="fileInput" accept="image/*" class="hidden" />
+        </div>
+        <div class="stage hidden" id="imgStage">
+          <canvas id="imgCanvas"></canvas>
+          <div class="status" id="imgStatus"></div>
+        </div>
+      </div>
+
+      <footer>Powered by YOGESH11K &middot; Stem Face Mask Detector</footer>
     </div>
-    <script>
-      document.getElementById('launch').href = 'https://face-mask-detection-l90y.onrender.com';
-    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.18.0/dist/ort.min.js"></script>
+    <script src="app.js"></script>
   </body>
 </html>
