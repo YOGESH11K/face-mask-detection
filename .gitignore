@@ -1,0 +1,14 @@
+# Python virtual environments
+venv
+.venv
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Temp/local artifacts
+.DS_Store
+mask_detector.h5
+
+# Training dataset (large, not required to run the app)
+dataset/
